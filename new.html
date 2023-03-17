@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OpenAI Image Generator</title>
+  </head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 8px 16px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0069d9;
+    }
+
+    #image-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    #image-container img {
+      max-width: 100%;
+      max-height: 100%;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+  <body>
+    <div>
+      <label for="prompt">Enter prompt:</label>
+      <input type="text" id="prompt" />
+      <button id="generate-btn">Generate Image</button>
+    </div>
+    <div id="image-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      const generateBtn = document.getElementById("generate-btn");
+      const promptInput = document.getElementById("prompt");
+      const imageContainer = document.getElementById("image-container");
+
+      const apiKey = "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"; // Replace with your actual OpenAI API key
+
+      generateBtn.addEventListener("click", async () => {
+        try {
+          const response = await axios.post(
+            "https://api.openai.com/v1/images/generations",
+            {
+              model: "image-alpha-001",
+              prompt: promptInput.value,
+              size: "1024x1024",
+              n: 1,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${apiKey}`,
+              },
+            }
+          );
+
+          const imageUrl = response.data.data[0].url;
+
+          const image = document.createElement("img");
+          image.src = imageUrl;
+          imageContainer.innerHTML = "";
+          imageContainer.appendChild(image);
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    </script>
+  </body>
+</html>
